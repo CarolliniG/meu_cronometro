@@ -1,0 +1,84 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronômetro e Temporizador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h1 class="color1">Cronômetro</h1>
+            <div class="controls">
+                <button class="color4" onclick="startTimer()">Iniciar Cronômetro</button>
+                <button class="color5" onclick="stopTimer()">Parar Cronômetro</button>
+                <button class="color3" onclick="resetTimer()">Reiniciar Cronômetro</button>
+            </div>
+            <h2 class="color2"><span id="time">0.00</span> segundos</h2>
+        </div>
+
+        <div class="section">
+            <h1 class="color1">Temporizador</h1>
+            <div class="controls">
+                <input type="number" id="timerInput" placeholder="Tempo em segundos" class="color3">
+                <button class="color4" onclick="startCountdown()">Iniciar Temporizador</button>
+            </div>
+            <h2 class="color2"><span id="countdown">0.00</span> segundos</h2>
+        </div>
+    </div>
+
+    <script>
+        let timer;
+        let startTime;
+        let elapsedTime = 0;
+        let countdownTimer;
+        let countdownTime;
+
+        // Funções do cronômetro
+        function startTimer() {
+            if (!timer) {
+                startTime = Date.now() - elapsedTime;
+                timer = setInterval(() => {
+                    elapsedTime = Date.now() - startTime;
+                    document.getElementById('time').innerText = (elapsedTime / 1000).toFixed(2);
+                }, 100);
+            }
+        }
+
+        function stopTimer() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        function resetTimer() {
+            stopTimer();
+            elapsedTime = 0;
+            document.getElementById('time').innerText = '0.00';
+        }
+
+        // Funções do temporizador
+        function startCountdown() {
+            let input = document.getElementById('timerInput').value;
+            if (input && input > 0) {
+                countdownTime = input * 1000;
+                if (!countdownTimer) {
+                    countdownTimer = setInterval(() => {
+                        countdownTime -= 100;
+                        document.getElementById('countdown').innerText = (countdownTime / 1000).toFixed(2);
+                        if (countdownTime <= 0) {
+                            clearInterval(countdownTimer);
+                            countdownTimer = null;
+                            alert("O temporizador terminou!");
+                        }
+                    }, 100);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
